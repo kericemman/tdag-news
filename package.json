@@ -10,7 +10,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test src/modules/**/*.test.ts",
+    "test": "node --import tsx --test src/modules/**/*.test.ts src/lib/*.test.ts",
     "worker:dev": "tsx watch src/worker/index.ts",
     "worker:start": "tsx src/worker/index.ts",
     "check": "npm run typecheck && npm run test && npm run build"

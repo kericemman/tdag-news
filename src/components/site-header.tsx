@@ -2,6 +2,8 @@ const sections = [
   ["Latest", "/latest"], ["AI", "/ai"], ["Africa", "/africa"],
   ["Business", "/business"], ["Developers", "/developers"],
   ["Opportunities", "/opportunities"],
+  ["Search", "/search"],
+  ["Premium", "/premium"],
 ] as const;
 
 export function SiteHeader({ preview = false }: { preview?: boolean }) {
