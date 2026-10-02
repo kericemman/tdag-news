@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --tdag-teal: #0b9e87;
+  --tdag-navy: #1b304b;
+  --tdag-offwhite: #eff2f2;
+  --tdag-ink: #0d1c2d;
+}
+
+body { margin: 0; background: var(--tdag-offwhite); color: var(--tdag-ink); }
+a { color: inherit; }
