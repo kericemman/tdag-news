@@ -17,11 +17,12 @@ Status: **in progress**. This file records observed results rather than marking 
 - `npm install` audit: zero reported vulnerabilities at installation time.
 - Built server on loopback: `/` returned 200, `/api/health` returned 200, and unauthenticated `/api/internal/ready` returned 404 as intended.
 - `git check-ignore backend/.env`: pass; the existing secret file is excluded and was not opened.
+- First GitHub Actions [CI run](https://github.com/kericemman/tdag-news/actions/runs/36979216419) for commit `241936c`: completed successfully.
 - MongoDB, Redis, OpenAI, Resend, Cloudinary, WhatChimp, Paystack and production deployment: **not tested**; credentials/accounts have not been supplied.
 
 ## Remaining Phase 1 work
 
-1. Verify CI on GitHub and set branch protection/review requirements once remote access is established.
+1. Set branch protection/review requirements on GitHub; CI has been verified.
 2. Create staging and production environments and secret store. Prove clean clone, build, web start and worker start in staging.
 3. Run Atlas CRUD/index, Redis queue/retry and backup/restore proofs with real test resources.
 4. Run account-level provider spikes: OpenAI structured output/embedding/model access and budget; Resend verified domain/webhook; Cloudinary signed rights-cleared upload; WhatChimp approved owner template/status/inbound webhook; Paystack sandbox checkout and signed duplicate webhook.
