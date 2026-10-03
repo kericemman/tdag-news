@@ -16,7 +16,7 @@ export const sourceInputSchema = z.object({
 });
 export type SourceInput = z.infer<typeof sourceInputSchema>;
 export type SourceRecord = SourceInput & { id: string; status: "proposed" | "active" | "paused"; createdAt: string; updatedAt: string; approvedBy?: string; nextFetchAt?: string; lastFetchAt?: string; etag?: string; lastModified?: string; failureCount: number };
-export type CandidateRecord = { id: string; sourceId: string; externalId: string; canonicalUrl: string; title: string; summary: string; contentHash: string; detectedAt: string; publishedAt?: string; status: "new" | "triaged" | "researching" | "ignored" | "rejected" | "merged"; assignedTo?: string; sourceName: string; sourceAuthority: SourceInput["authority"]; region: string; topics: string[]; verificationState: "unverified"; mediaState: "unknown" };
+export type CandidateRecord = { id: string; sourceId: string; externalId: string; canonicalUrl: string; title: string; summary: string; contentHash: string; detectedAt: string; publishedAt?: string; status: "new" | "triaged" | "researching" | "ignored" | "rejected" | "merged"; assignedTo?: string; clusterId?: string; clusterMatchReason?: "same_url" | "same_title_date" | "new"; sourceName: string; sourceAuthority: SourceInput["authority"]; region: string; topics: string[]; verificationState: "unverified"; mediaState: "unknown" };
 type FetchRecord = { id: string; sourceId: string; at: string; status: "success" | "not_modified" | "failure"; httpStatus?: number; found: number; inserted: number; error?: string };
 
 async function db() {

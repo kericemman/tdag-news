@@ -17,7 +17,7 @@ const activeQueues = [
   { label: "Published", status: "published" },
   { label: "Updated", status: "updated" },
 ];
-const futureQueues = ["Incoming", "Trending", "Clusters", "Research", "Opportunities", "Sources", "Entities", "Media", "Subscribers", "Premium", "Distribution", "Analytics", "AI Operations", "Health", "Settings"];
+const futureQueues = ["Trending", "Research", "Media", "Subscribers", "Premium", "Distribution", "Analytics", "AI Operations", "Settings"];
 
 export default async function NewsroomPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const actor = await currentStaff();
@@ -32,7 +32,7 @@ export default async function NewsroomPage({ searchParams }: { searchParams: Pro
       <div><p className="eyebrow">TDAG News</p><h1>Newsroom</h1><p>Signed in as {actor.name} · {actor.role.replaceAll("_", " ")}</p></div>
       <div className="newsroom-actions">
         {canEdit(actor.role) && <Link className="newsroom-button" href="/newsroom/new">New story</Link>}
-        {["super_admin", "editor", "researcher"].includes(actor.role) && <><Link href="/newsroom/incoming">Incoming</Link><Link href="/newsroom/sources">Sources</Link></>}
+        {["super_admin", "editor", "researcher"].includes(actor.role) && <><Link href="/newsroom/incoming">Incoming</Link><Link href="/newsroom/clusters">Clusters</Link><Link href="/newsroom/sources">Sources</Link><Link href="/newsroom/entities">Entities</Link><Link href="/newsroom/opportunities">Opportunities</Link><Link href="/newsroom/collector">Collector health</Link></>}
         {["super_admin", "editor", "researcher"].includes(actor.role) && <Link href="/newsroom/submissions">Submissions</Link>}
         <Link href="/">View site</Link><NewsroomSignOut />
       </div>
