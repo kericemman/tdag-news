@@ -447,3 +447,11 @@ main { min-height: 45vh; }
   .dashboard-metrics a { min-height: 116px; padding: .85rem; }
   .dashboard-metrics strong { font-size: 2rem; }
 }
+.research-panel { margin-bottom: 1.5rem; }
+.research-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.research-heading h2 { margin: .25rem 0 0; }
+.research-result { border-top: 1px solid var(--border, #e5e7eb); margin-top: 1.25rem; padding-top: 1.25rem; }
+.research-result h3 { font-family: Manrope, sans-serif; font-size: 1rem; margin: 1.35rem 0 .4rem; }
+.research-result ul { padding-left: 1.3rem; }
+.research-result li { margin: .5rem 0; line-height: 1.5; }
+.research-result em { color: #64748b; font-style: normal; display: block; }
