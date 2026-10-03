@@ -305,3 +305,12 @@ main { min-height: 45vh; }
   .footer-intro { grid-column: 1 / -1; }
   .footer-bottom { display: grid; }
 }
+
+.brand-logo { display: block; position: relative; flex: none; overflow: hidden; background: #fff; text-decoration: none; }
+.brand-logo img { position: absolute; display: block; width: 100%; height: auto; max-width: none; left: 0; top: 50%; transform: translateY(-50%); }
+.brand-logo-header { width: 246px; height: 76px; }
+.brand-logo-footer { width: 246px; height: 86px; margin: -.55rem 0 .4rem; }
+@media (max-width: 480px) {
+  .brand-logo-header { width: 190px; height: 62px; }
+  .brand-logo-footer { width: 218px; height: 76px; }
+}
