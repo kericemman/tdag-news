@@ -175,7 +175,7 @@ button, input, select, textarea { font: inherit; }
 .newsroom-top { display: flex; justify-content: space-between; gap: 2rem; align-items: flex-start; border-bottom: 1px solid #ccd7da; padding-bottom: 1.5rem; margin-bottom: 2rem; }
 .newsroom-top a, .newsroom-shell a { color: #075c59; }
 .newsroom-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.newsroom-button, .newsroom-shell button[type="button"], .newsroom-signin button { display: inline-block; border: 1px solid #075c59; background: #075c59; color: white; border-radius: .3rem; padding: .65rem 1rem; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+.newsroom-button, .newsroom-shell button[type="button"], .newsroom-shell button[type="submit"], .newsroom-signin button { display: inline-block; border: 1px solid #075c59; background: #075c59; color: white; border-radius: .3rem; padding: .65rem 1rem; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
 .newsroom-shell button:disabled { opacity: .5; cursor: not-allowed; }
 .newsroom-queues { display: flex; flex-wrap: wrap; gap: .45rem; }
 .newsroom-queues span { background: #eaf0ef; color: #344b55; border-radius: 2rem; padding: .35rem .7rem; font-size: .8rem; }

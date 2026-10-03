@@ -32,6 +32,7 @@ export default async function NewsroomPage({ searchParams }: { searchParams: Pro
       <div><p className="eyebrow">TDAG News</p><h1>Newsroom</h1><p>Signed in as {actor.name} · {actor.role.replaceAll("_", " ")}</p></div>
       <div className="newsroom-actions">
         {canEdit(actor.role) && <Link className="newsroom-button" href="/newsroom/new">New story</Link>}
+        {["super_admin", "editor", "researcher"].includes(actor.role) && <><Link href="/newsroom/incoming">Incoming</Link><Link href="/newsroom/sources">Sources</Link></>}
         {["super_admin", "editor", "researcher"].includes(actor.role) && <Link href="/newsroom/submissions">Submissions</Link>}
         <Link href="/">View site</Link><NewsroomSignOut />
       </div>

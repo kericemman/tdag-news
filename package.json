@@ -14,6 +14,7 @@
     "worker:dev": "tsx watch src/worker/index.ts",
     "worker:start": "tsx src/worker/index.ts",
     "staff:create": "tsx scripts/create-staff.ts",
+    "sources:propose": "tsx scripts/propose-sources.ts",
     "check": "npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
@@ -24,12 +25,14 @@
     "@tiptap/react": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4",
     "bullmq": "^6.3.11",
+    "fast-xml-parser": "^5.11.2",
     "ioredis": "^5.9.3",
     "mongoose": "^8.24.4",
     "next": "16.3.8",
     "openai": "^6.30.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "resend": "^6.32.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.20.6",
     "zod": "^4.4.3"
