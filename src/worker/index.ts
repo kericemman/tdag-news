@@ -4,6 +4,7 @@ import { dueSources } from "@/modules/collector/store";
 import { fetchSource } from "@/modules/collector/fetch";
 import { clusterCandidate, unclusteredCandidates } from "@/modules/collector/clusters";
 import { expireOpportunities } from "@/modules/collector/opportunities";
+import { embedCandidate } from "@/modules/ai/vectors";
 
 async function main(): Promise<void> {
   const redis = getRedis();
@@ -13,6 +14,7 @@ async function main(): Promise<void> {
   const sourceWorker = new Worker("source-fetch", async (job) => fetchSource(String(job.data.sourceId)), { connection: redis, concurrency: 2 });
   const clusterQueue = new Queue("candidate-cluster", { connection: redis });
   const clusterWorker = new Worker("candidate-cluster", async (job) => clusterCandidate(String(job.data.candidateId)), { connection: redis, concurrency: 1 });
+  const embedWorker = new Worker("candidate-embed", async (job) => embedCandidate(String(job.data.candidateId), String(job.data.actorId)), { connection: redis, concurrency: 1 });
   const schedule = async () => {
     try {
       for (const source of await dueSources()) await sourceQueue.add("fetch-source", { sourceId: source.id }, { jobId: `fetch-${source.id}`, attempts: 3, backoff: { type: "exponential", delay: 60000 }, removeOnComplete: true, removeOnFail: 1000 });
@@ -27,8 +29,9 @@ async function main(): Promise<void> {
   });
   sourceWorker.on("failed", (job, error) => process.stderr.write(JSON.stringify({ level: "error", queue: "source-fetch", jobId: job?.id, message: error.message }) + "\n"));
   clusterWorker.on("failed", (job, error) => process.stderr.write(JSON.stringify({ level: "error", queue: "candidate-cluster", jobId: job?.id, message: error.message }) + "\n"));
+  embedWorker.on("failed", (job, error) => process.stderr.write(JSON.stringify({ level: "error", queue: "candidate-embed", jobId: job?.id, message: error.message }) + "\n"));
   process.stdout.write(JSON.stringify({ level: "info", message: "worker started", queue: "maintenance" }) + "\n");
-  const shutdown = async () => { clearInterval(timer); await Promise.all([worker.close(), sourceWorker.close(), clusterWorker.close(), sourceQueue.close(), clusterQueue.close()]); await redis.quit(); process.exit(0); };
+  const shutdown = async () => { clearInterval(timer); await Promise.all([worker.close(), sourceWorker.close(), clusterWorker.close(), embedWorker.close(), sourceQueue.close(), clusterQueue.close()]); await redis.quit(); process.exit(0); };
   process.once("SIGINT", shutdown);
   process.once("SIGTERM", shutdown);
 }

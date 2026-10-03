@@ -459,3 +459,6 @@ main { min-height: 45vh; }
 .candidate-ai-note > strong { color: #075e58; font: 700 .75rem Manrope, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
 .candidate-ai-note p { margin: .5rem 0; }
 .candidate-ai-note small { color: #667785; }
+.similar-leads { list-style: none; padding: 0; margin: 1rem 0 0; }
+.similar-leads li { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid #e2e8f0; padding: .8rem 0; }
+.similar-leads span { color: #64748b; font-size: .85rem; }

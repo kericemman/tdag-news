@@ -2,7 +2,7 @@ import { z } from "zod";
 import { readJson, newsroomError, staffMutation } from "@/modules/newsroom/http";
 import { retryCollectorJob } from "@/modules/collector/operations";
 
-const schema = z.object({ queue: z.enum(["source-fetch", "candidate-cluster"]), id: z.string().min(1).max(200) });
+const schema = z.object({ queue: z.enum(["source-fetch", "candidate-cluster", "candidate-embed"]), id: z.string().min(1).max(200) });
 
 export async function POST(request: Request) {
   const auth = await staffMutation(request);

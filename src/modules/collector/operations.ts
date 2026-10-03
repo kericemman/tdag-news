@@ -1,7 +1,7 @@
 import { Queue } from "bullmq";
 import { getRedis } from "@/lib/redis";
 
-export type FailedCollectorJob = { queue: "source-fetch" | "candidate-cluster"; id: string; name: string; failedReason: string; attemptsMade: number; timestamp: number };
+export type FailedCollectorJob = { queue: "source-fetch" | "candidate-cluster" | "candidate-embed"; id: string; name: string; failedReason: string; attemptsMade: number; timestamp: number };
 export type CollectorQueueHealth = { queue: FailedCollectorJob["queue"]; waiting: number; active: number; delayed: number; failed: number };
 
 function queue(name: FailedCollectorJob["queue"]): Queue { return new Queue(name, { connection: getRedis() }); }
@@ -11,7 +11,7 @@ export async function collectorOperations(): Promise<{ health: CollectorQueueHea
   if (redis.status === "wait") await redis.connect();
   const health: CollectorQueueHealth[] = [];
   const failed: FailedCollectorJob[] = [];
-  for (const name of ["source-fetch", "candidate-cluster"] as const) {
+  for (const name of ["source-fetch", "candidate-cluster", "candidate-embed"] as const) {
     const jobs = queue(name);
     try {
       const counts = await jobs.getJobCounts("waiting", "active", "delayed", "failed");

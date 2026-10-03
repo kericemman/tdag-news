@@ -101,6 +101,10 @@ export async function listCandidates(status: CandidateRecord["status"] = "new", 
   return (await db()).collection<CandidateRecord>("storyCandidates").find({ status }).sort({ detectedAt: -1 }).limit(Math.min(limit, 100)).toArray();
 }
 
+export async function getCandidate(id: string): Promise<CandidateRecord | null> {
+  return (await db()).collection<CandidateRecord>("storyCandidates").findOne({ id });
+}
+
 export async function setCandidateStatus(id: string, expectedStatus: CandidateRecord["status"], status: CandidateRecord["status"], actor: StaffActor): Promise<void> {
   if (!actor.active || !["super_admin", "editor", "researcher"].includes(actor.role)) throw new Error("FORBIDDEN");
   if (["rejected", "merged", "ignored"].includes(status) && actor.role === "researcher") throw new Error("FORBIDDEN");

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export function CollectorRetry({ queue, id }: { queue: "source-fetch" | "candidate-cluster"; id: string }) {
+export function CollectorRetry({ queue, id }: { queue: "source-fetch" | "candidate-cluster" | "candidate-embed"; id: string }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   async function retry() {

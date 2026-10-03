@@ -5,7 +5,7 @@ import { z } from "zod";
 import { readConfig, requireConfig } from "@/lib/config";
 import { connectMongoDB } from "@/lib/mongodb";
 
-export const promptVersions = { clusterResearch: "cluster-research-v1", candidateClassification: "candidate-classification-v1" } as const;
+export const promptVersions = { clusterResearch: "cluster-research-v1", candidateClassification: "candidate-classification-v1", candidateEmbedding: "candidate-embedding-v1" } as const;
 
 type Task = keyof typeof promptVersions;
 type Usage = { inputTokens: number; outputTokens: number };
@@ -65,6 +65,29 @@ export async function runStructuredTask<T>(input: {
   } catch (error) {
     const errorCode = error instanceof z.ZodError || error instanceof SyntaxError ? "INVALID_MODEL_OUTPUT" : error instanceof Error && error.message === "EMPTY_OUTPUT" ? "EMPTY_OUTPUT" : "PROVIDER_FAILURE";
     await recordRun({ task: input.task, actorId: input.actorId, subjectId: input.subjectId, model, promptVersion, status: "failure", durationMs: Date.now() - start, errorCode });
+    throw new Error(errorCode);
+  }
+}
+
+export async function embedText(input: { actorId: string; subjectId: string; text: string }): Promise<{ vector: number[]; model: string; dimensions: number; usage: Usage }> {
+  const config = readConfig();
+  const apiKey = requireConfig(config, "OPENAI_API_KEY");
+  if (!input.text.trim() || input.text.length > config.AI_MAX_INPUT_CHARS) throw new Error("AI_INPUT_TOO_LARGE");
+  await reserveCall(config.AI_DAILY_CALL_LIMIT);
+  const model = config.AI_EMBEDDING_MODEL;
+  const promptVersion = promptVersions.candidateEmbedding;
+  const start = Date.now();
+  try {
+    const client = new OpenAI({ apiKey, maxRetries: 1, timeout: 30_000 });
+    const response = await client.embeddings.create({ model, input: input.text, dimensions: config.AI_EMBEDDING_DIMENSIONS, encoding_format: "float" });
+    const vector = response.data[0]?.embedding;
+    if (!vector || vector.length !== config.AI_EMBEDDING_DIMENSIONS || vector.some((value) => !Number.isFinite(value))) throw new Error("INVALID_EMBEDDING");
+    const usage = { inputTokens: response.usage.prompt_tokens, outputTokens: 0 };
+    await recordRun({ task: "candidateEmbedding", actorId: input.actorId, subjectId: input.subjectId, model, promptVersion, status: "success", durationMs: Date.now() - start, usage });
+    return { vector, model, dimensions: vector.length, usage };
+  } catch (error) {
+    const errorCode = error instanceof Error && error.message === "INVALID_EMBEDDING" ? "INVALID_EMBEDDING" : "PROVIDER_FAILURE";
+    await recordRun({ task: "candidateEmbedding", actorId: input.actorId, subjectId: input.subjectId, model, promptVersion, status: "failure", durationMs: Date.now() - start, errorCode });
     throw new Error(errorCode);
   }
 }

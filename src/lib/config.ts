@@ -13,6 +13,8 @@ const configSchema = z.object({
   AI_MODEL_REASONING: z.string().default("gpt-6.1-sol"),
   AI_MODEL_DEEP: z.string().default("gpt-6-astra"),
   AI_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
+  AI_EMBEDDING_DIMENSIONS: z.coerce.number().int().min(1).max(8192).default(1536),
+  AI_VECTOR_INDEX: z.string().regex(/^[a-zA-Z][a-zA-Z0-9_-]{0,63}$/).default("candidate_vector_v1"),
   AI_DAILY_CALL_LIMIT: z.coerce.number().int().min(1).max(10000).default(20),
   AI_MAX_INPUT_CHARS: z.coerce.number().int().min(1000).max(200000).default(30000),
   RESEND_API_KEY: optionalSecret,
