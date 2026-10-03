@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const optionalSecret = z.string().trim().min(1).optional();
+const optionalSecret = z.preprocess((value) => typeof value === "string" && value.trim() === "" ? undefined : value, z.string().trim().min(1).optional());
 
 const configSchema = z.object({
   APP_URL: z.url().default("http://localhost:3000"),

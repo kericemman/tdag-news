@@ -13,7 +13,7 @@
 ## Setup and verification gates
 
 1. Configure a **non-production** MongoDB Atlas replica set and provide `MONGODB_URI` through a local untracked environment or secret store. MongoDB transactions are required for story, revision and audit atomicity.
-2. In an interactive terminal with `MONGODB_URI` available, create the single owner: `npm run staff:create -- --email=owner@example.com --name='Emmanuel Kerich' --role=super_admin`. Enter the password at the hidden prompt. Additional staff roles can be created by a trusted operator with the same command and an appropriate `--role`. This CLI must be limited to trusted operators with database access.
+2. Set `MONGODB_URI` in the project's untracked root `.env` file (or the terminal environment), then run in an interactive terminal: `npm run staff:create -- --email=your-address@example.com --name='Emmanuel Kerich' --role=super_admin`. The script loads the root `.env` automatically and asks for a hidden password of at least 12 characters. Additional staff roles can be created by a trusted operator with the same command and an appropriate `--role`. This CLI must be limited to trusted operators with database access.
 3. Exercise a real story through create, autosave, citation/claim checks, review, approval, publication and correction in staging. Verify conflict handling and role denial with separate staff accounts. No real content has been inserted by this implementation.
 4. Keep `PUBLICATION_LIVE=false` and `SUBMISSIONS_OPEN=false` until the owner approves the first content, legal pages, source and media rights, and production launch.
 

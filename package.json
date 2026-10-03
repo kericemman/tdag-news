@@ -13,7 +13,7 @@
     "test": "node --import tsx --test src/modules/**/*.test.ts src/lib/*.test.ts",
     "worker:dev": "tsx watch src/worker/index.ts",
     "worker:start": "tsx src/worker/index.ts",
-    "staff:create": "tsx scripts/create-staff.ts",
+    "staff:create": "node --import tsx scripts/create-staff.ts",
     "sources:propose": "tsx scripts/propose-sources.ts",
     "check": "npm run typecheck && npm run test && npm run build"
   },

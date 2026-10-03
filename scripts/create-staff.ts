@@ -2,6 +2,9 @@ import { createStaffUser, countOwners } from "../src/modules/newsroom/store";
 import { hashPassword } from "../src/modules/newsroom/security";
 import type { StaffRole } from "../src/modules/newsroom/policy";
 import { z } from "zod";
+import { loadEnvConfig } from "@next/env";
+
+loadEnvConfig(process.cwd());
 
 const args = Object.fromEntries(process.argv.slice(2).map((part) => part.split("=", 2)));
 const email = args["--email"];
