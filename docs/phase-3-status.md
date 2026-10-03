@@ -6,7 +6,7 @@
 - Article renderer for structured text, citations, source list, corrections, image credit, and article JSON-LD. Empty or unknown records return a clear empty state or 404; no synthetic articles are published.
 - About, editorial policy, corrections, authors, contact, privacy, terms, sponsored content, premium, submission, personalization and account information pages. Draft policy and unavailable product pages are clearly labeled and excluded from indexing.
 - RSS feed, category RSS feeds, sitemap, Google News sitemap and robots rules. `PUBLICATION_LIVE=false` is the default; it blocks indexing and leaves public feeds empty. The News sitemap includes only published news from the previous 48 hours once real content is connected.
-- Typed `PublicationRepository` boundary for the future approved MongoDB publication read model. Its current implementation deliberately returns no stories or briefs and only the real TDAG News Team byline.
+- Typed `PublicationRepository` boundary. Phase 4 now connects article reads to owner-published MongoDB records; briefs still return an honest empty state. When `PUBLICATION_LIVE=false`, the public article read returns no stories.
 
 ## Remaining gates before this phase can serve a live publication
 

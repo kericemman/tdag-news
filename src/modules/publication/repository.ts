@@ -1,4 +1,7 @@
-/** Public read boundary. Phase 4 will connect it to approved MongoDB records. */
+import { listPublicStories, getPublicStory } from "@/modules/newsroom/store";
+import { toPublishedArticle, type StoryRecord } from "@/modules/newsroom/story";
+
+/** Public read boundary. Only owner-published records are eligible for public reads. */
 export type StorySummary = {
   id: string;
   slug: string;
@@ -21,12 +24,12 @@ export type PublicSource = {
   authority: "Primary" | "Trusted secondary" | "Specialist secondary";
 };
 
-export type RichTextPart = { text: string; sourceIds?: string[] };
+export type RichTextPart = { text: string; sourceIds?: string[]; marks?: ("bold" | "italic")[] };
 
 export type ArticleBlock =
   | { kind: "paragraph"; id: string; parts: RichTextPart[] }
   | { kind: "heading"; id: string; level: 2 | 3; text: string }
-  | { kind: "quote"; id: string; text: string; attribution?: string }
+  | { kind: "quote"; id: string; text: string; attribution?: string; sourceIds?: string[] }
   | { kind: "callout"; id: string; label: string; parts: RichTextPart[] }
   | { kind: "list"; id: string; items: RichTextPart[][] }
   | { kind: "media"; id: string; src: string; alt: string; width: number; height: number; caption: string; credit: string };
@@ -62,10 +65,16 @@ export interface PublicationRepository {
   getAuthor(slug: string): Promise<PublicAuthor | null>;
 }
 
-/** Explicit empty implementation until an approved editorial data source exists. */
+function summary(story: StoryRecord): StorySummary {
+  return { id: story.id, slug: story.slug, headline: story.headline, standfirst: story.standfirst,
+    category: story.category, type: story.type, authorName: story.authorName,
+    publishedAt: story.publishedAt!, updatedAt: story.updatedAt,
+    hero: story.hero ? { src: story.hero.src, alt: story.hero.alt, width: story.hero.width, height: story.hero.height, caption: story.hero.caption, credit: story.hero.credit } : undefined };
+}
+
 export const publicationRepository: PublicationRepository = {
-  async listStories() { return []; },
-  async getArticle() { return null; },
+  async listStories(input) { return (await listPublicStories(input)).map(summary); },
+  async getArticle(slug) { const story = await getPublicStory(slug); return story ? toPublishedArticle(story) : null; },
   async listBriefs() { return []; },
   async getBrief() { return null; },
   async listAuthors() { return [{ id: "tdag-news-team", slug: "tdag-news-team", name: "TDAG News Team", biography: "The editorial team of TDAG News, part of The Digital A-Game." }]; },

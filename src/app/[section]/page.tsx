@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getCategory } from "@/modules/publication/categories";
 import { publicationRepository } from "@/modules/publication/repository";
 import { EmptyCoverage, PageFrame, PageHeading, StoryList } from "@/components/publication-ui";
+import { SubmissionForm } from "@/components/submission-form";
 
 type Props = { params: Promise<{ section: string }> };
 
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${category?.label ?? page.title} | TDAG News`, description: category?.description ?? page.description, alternates: { canonical: `/${section}` }, robots: { index: false, follow: true } };
 }
 
-export default async function SectionPage({ params }: Props) {
+export default async function SectionPage({ params, searchParams }: Props & { searchParams: Promise<{ sent?: string }> }) {
   const { section } = await params;
   const category = getCategory(section);
   if (category) {
@@ -49,7 +50,7 @@ export default async function SectionPage({ params }: Props) {
     {page.kind === "authors" && <div className="author-list">{authors.map((author) => <article key={author.id}><h2><Link href={`/author/${author.slug}`}>{author.name}</Link></h2><p>{author.biography}</p></article>)}</div>}
     {page.kind === "contact" && <><p>Direct newsroom contact details are being prepared. You can visit the parent TDAG website for current contact information.</p><a href="https://thedigitalagame.com">Visit The Digital A-Game</a></>}
     {page.kind === "premium" && <><p>TDAG Premium is planned as personalized technology intelligence through WhatsApp. It will use your chosen topics, role, region and delivery frequency to select useful updates.</p><p>Pricing and registration are not open yet. The public website remains free.</p></>}
-    {page.kind === "submit" && <><p>Story submissions will open with a secure form and independent editorial review. Submission will not guarantee publication.</p><p>Until then, please use the parent TDAG website for current contact information.</p></>}
+    {page.kind === "submit" && (process.env.SUBMISSIONS_OPEN === "true" ? <SubmissionForm sent={(await searchParams).sent === "1"} /> : <><p>Story submissions will open with a secure form and independent editorial review. Submission will not guarantee publication.</p><p>Until then, please use the parent TDAG website for current contact information.</p></>)}
     {page.kind === "auth" && <p>This account feature is being built. No registration or sign-in is available yet.</p>}
     {page.kind === "foryou" && <><p>For You will use interests you choose, such as topics, companies, regions and a professional role. It will explain why a story appears and let you change those choices.</p><p>Personalized feeds are not available yet. Browse <Link href="/latest">latest coverage</Link> in the meantime.</p></>}
   </div></PageFrame>;

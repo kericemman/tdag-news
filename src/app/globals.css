@@ -169,3 +169,47 @@ button, input, select, textarea { font: inherit; }
   .search-form button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.newsroom-shell { max-width: 1480px; margin: 0 auto; padding: 2rem clamp(1rem, 3vw, 3rem) 5rem; font-family: var(--font-interface); color: #172b3b; }
+.newsroom-shell h1, .newsroom-signin h1 { font-family: var(--font-editorial); font-size: clamp(2.4rem, 4vw, 4rem); line-height: 1.05; margin: .3rem 0 1rem; }
+.newsroom-shell h2 { font-size: 1.25rem; margin: 2rem 0 .8rem; }
+.newsroom-top { display: flex; justify-content: space-between; gap: 2rem; align-items: flex-start; border-bottom: 1px solid #ccd7da; padding-bottom: 1.5rem; margin-bottom: 2rem; }
+.newsroom-top a, .newsroom-shell a { color: #075c59; }
+.newsroom-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.newsroom-button, .newsroom-shell button[type="button"], .newsroom-signin button { display: inline-block; border: 1px solid #075c59; background: #075c59; color: white; border-radius: .3rem; padding: .65rem 1rem; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+.newsroom-shell button:disabled { opacity: .5; cursor: not-allowed; }
+.newsroom-queues { display: flex; flex-wrap: wrap; gap: .45rem; }
+.newsroom-queues span { background: #eaf0ef; color: #344b55; border-radius: 2rem; padding: .35rem .7rem; font-size: .8rem; }
+.newsroom-queues a { background: #eaf0ef; color: #344b55; border-radius: 2rem; padding: .35rem .7rem; font-size: .8rem; text-decoration: none; }
+.newsroom-queues a[aria-current="page"] { background: #075c59; color: #fff; }
+.newsroom-note { color: #53656d; font-size: .85rem; }
+.newsroom-table-wrap { overflow-x: auto; }
+.newsroom-table { width: 100%; border-collapse: collapse; text-align: left; }
+.newsroom-table th, .newsroom-table td { border-bottom: 1px solid #d8e1e2; padding: .75rem .5rem; vertical-align: top; }
+.newsroom-editor-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 330px); gap: 1.5rem; align-items: start; }
+.newsroom-panel { background: #fff; border: 1px solid #d8e1e2; border-radius: .5rem; padding: clamp(1rem, 2vw, 2rem); }
+.newsroom-fields, .newsroom-signin form { display: grid; gap: 1rem; }
+.newsroom-panel label, .newsroom-signin label { display: grid; gap: .35rem; font-weight: 650; font-size: .85rem; }
+.newsroom-panel input, .newsroom-panel select, .newsroom-panel textarea, .newsroom-signin input { width: 100%; border: 1px solid #9daeb1; border-radius: .25rem; background: white; color: #172b3b; padding: .65rem; font: inherit; font-weight: 400; }
+.newsroom-field-row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: end; }
+.newsroom-field-row label { flex: 1 1 180px; }
+.newsroom-toolbar { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.newsroom-toolbar button { padding: .4rem .65rem !important; font-size: .8rem !important; }
+.newsroom-tiptap .tiptap { min-height: 280px; padding: 1rem; border: 1px solid #9daeb1; border-radius: .25rem; font-family: var(--font-editorial); font-size: 1.15rem; line-height: 1.6; }
+.newsroom-tiptap .tiptap:focus-visible { outline: 3px solid #078c86; outline-offset: 2px; }
+.newsroom-tiptap .tiptap p { margin: 0 0 1rem; }
+.newsroom-citation-list { display: grid; gap: .8rem; }
+.newsroom-source-list, .newsroom-audit { padding-left: 1.3rem; overflow-wrap: anywhere; }
+.newsroom-audit { font-size: .8rem; line-height: 1.7; }
+.newsroom-history { max-width: 850px; padding-left: 1.4rem; }
+.newsroom-history li { border-bottom: 1px solid #d8e1e2; padding: 1rem 0; }
+.newsroom-history pre { overflow-x: auto; background: #edf2f2; padding: 1rem; font-size: .75rem; }
+.newsroom-signin { min-height: 80vh; display: grid; place-items: center; padding: 1rem; }
+.newsroom-signin .newsroom-panel { width: min(100%, 420px); }
+.form-error { color: #8a1b1b; font-weight: 700; }
+.submission-form { display: grid; gap: 1rem; max-width: 640px; margin: 2rem 0; font-family: var(--font-interface); }
+.submission-form label { display: grid; gap: .35rem; font-weight: 650; font-size: .9rem; }
+.submission-form input, .submission-form select, .submission-form textarea { width: 100%; border: 1px solid #9daeb1; border-radius: .25rem; padding: .7rem; font: inherit; }
+.submission-form button { width: fit-content; background: #075c59; color: #fff; border: 0; border-radius: .25rem; padding: .75rem 1.1rem; font: inherit; font-weight: 700; cursor: pointer; }
+.submission-honeypot { position: absolute; left: -9999px; }
+.newsroom-submissions { display: grid; gap: 1rem; }
+@media (max-width: 850px) { .newsroom-editor-grid { grid-template-columns: 1fr; } .newsroom-top { flex-direction: column; } }
