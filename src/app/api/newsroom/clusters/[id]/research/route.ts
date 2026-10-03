@@ -15,7 +15,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (code === "FORBIDDEN") return Response.json({ code }, { status: 403 });
     if (code === "NOT_FOUND") return Response.json({ code }, { status: 404 });
     if (code === "NO_SOURCE_LEADS") return Response.json({ code }, { status: 422 });
-    const reason = code === "Missing required configuration: OPENAI_API_KEY" ? "unavailable" : "failed";
+    const reason = code === "AI_BUDGET_EXCEEDED" ? "limit" : code === "Missing required configuration: OPENAI_API_KEY" ? "unavailable" : "failed";
     return Response.redirect(new URL(`/newsroom/clusters/${encodeURIComponent(id)}?research=${reason}`, request.url), 303);
   }
 }

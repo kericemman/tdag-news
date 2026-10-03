@@ -13,6 +13,8 @@ const configSchema = z.object({
   AI_MODEL_REASONING: z.string().default("gpt-6.1-sol"),
   AI_MODEL_DEEP: z.string().default("gpt-6-astra"),
   AI_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
+  AI_DAILY_CALL_LIMIT: z.coerce.number().int().min(1).max(10000).default(20),
+  AI_MAX_INPUT_CHARS: z.coerce.number().int().min(1000).max(200000).default(30000),
   RESEND_API_KEY: optionalSecret,
   WHATCHIMP_API_KEY: optionalSecret,
   PAYSTACK_SECRET_KEY: optionalSecret,

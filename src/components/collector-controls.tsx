@@ -26,8 +26,10 @@ export function SourceForm() {
 
 export function CandidateControls({ candidate, canReject }: { candidate: CandidateRecord; canReject: boolean }) {
   const [message, setMessage] = useState("");
+  const [classifying, setClassifying] = useState(false);
   const action = (status: CandidateRecord["status"]) => void post(`/api/newsroom/candidates/${candidate.id}/status`, { expectedStatus: candidate.status, status }).catch((error) => setMessage(error.message));
-  return <div className="newsroom-actions">{candidate.status === "new" && <button type="button" onClick={() => action("triaged")}>Triage</button>}{["new", "triaged"].includes(candidate.status) && <button type="button" onClick={() => action("researching")}>Research</button>}{canReject && ["new", "triaged", "researching"].includes(candidate.status) && <><button type="button" onClick={() => action("ignored")}>Ignore</button><button type="button" onClick={() => action("rejected")}>Reject</button></>}<p role="status">{message}</p></div>;
+  const classify = async () => { setClassifying(true); setMessage(""); try { await post(`/api/newsroom/candidates/${candidate.id}/classify`, {}); } catch (error) { setMessage(error instanceof Error && error.message === "AI_BUDGET_EXCEEDED" ? "The daily AI limit has been reached." : error instanceof Error && error.message === "AI_UNAVAILABLE" ? "AI triage is unavailable right now." : "AI triage failed."); setClassifying(false); } };
+  return <div className="newsroom-actions"><button type="button" disabled={classifying} onClick={() => void classify()}>{classifying ? "Classifying…" : "AI triage"}</button>{candidate.status === "new" && <button type="button" onClick={() => action("triaged")}>Triage</button>}{["new", "triaged"].includes(candidate.status) && <button type="button" onClick={() => action("researching")}>Research</button>}{canReject && ["new", "triaged", "researching"].includes(candidate.status) && <><button type="button" onClick={() => action("ignored")}>Ignore</button><button type="button" onClick={() => action("rejected")}>Reject</button></>}<p role="status">{message}</p></div>;
 }
 
 export function ManualCandidateForm({ sources }: { sources: SourceRecord[] }) {
