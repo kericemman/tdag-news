@@ -15,10 +15,13 @@ const nextConfig: NextConfig = {
       { source: "/newsroom/:path*", headers: [
         { key: "Cache-Control", value: "no-store" },
         { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        { key: "Referrer-Policy", value: "no-referrer" },
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'; form-action 'self'" },
       ] },
       { source: "/api/newsroom/:path*", headers: [
         { key: "Cache-Control", value: "no-store" },
         { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        { key: "Referrer-Policy", value: "no-referrer" },
       ] },
     ];
   },
