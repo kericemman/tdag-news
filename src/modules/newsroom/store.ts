@@ -95,10 +95,16 @@ export async function staffForSession(token: string | undefined): Promise<StaffA
   return user ? { id: user.id, name: user.name, role: user.role, active: user.active } : null;
 }
 
-export async function listNewsroomStories(limit = 50): Promise<StoryRecord[]> {
+export async function listNewsroomStories(limit = 50, statuses: readonly EditorialStatus[] = []): Promise<StoryRecord[]> {
   const c = await collections();
-  const records = await c.stories.find({}).sort({ updatedAt: -1 }).limit(Math.min(limit, 100)).toArray();
+  const records = await c.stories.find(statuses.length ? { status: { $in: [...statuses] } } : {}).sort({ updatedAt: -1 }).limit(Math.min(limit, 100)).toArray();
   return records.map((record) => storyRecordSchema.parse(record));
+}
+
+export async function newsroomStoryCounts(): Promise<Partial<Record<EditorialStatus, number>>> {
+  const c = await collections();
+  const groups = await c.stories.aggregate<{ _id: EditorialStatus; count: number }>([{ $group: { _id: "$status", count: { $sum: 1 } } }]).toArray();
+  return Object.fromEntries(groups.map((group) => [group._id, group.count]));
 }
 
 export async function getNewsroomStory(id: string): Promise<StoryRecord | null> {

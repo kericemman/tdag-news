@@ -9,11 +9,17 @@ import type { StaffRole } from "@/modules/newsroom/policy";
 type Item = { label: string; href: string; icon: string; roles?: StaffRole[] };
 const researchRoles: StaffRole[] = ["super_admin", "editor", "researcher"];
 const editorialRoles: StaffRole[] = ["super_admin", "editor", "writer"];
-const groups: { label: string; items: Item[] }[] = [
+const primaryGroups: { label: string; items: Item[] }[] = [
   { label: "Workspace", items: [{ label: "Overview", href: "/newsroom", icon: "grid" }, { label: "New story", href: "/newsroom/new", icon: "plus", roles: editorialRoles }] },
-  { label: "Editorial", items: [{ label: "Drafts", href: "/newsroom?status=draft", icon: "document" }, { label: "Review", href: "/newsroom?status=editorial_review", icon: "check" }, { label: "Published", href: "/newsroom?status=published", icon: "book" }] },
-  { label: "Discovery", items: [{ label: "Incoming", href: "/newsroom/incoming", icon: "inbox", roles: researchRoles }, { label: "Clusters", href: "/newsroom/clusters", icon: "cluster", roles: researchRoles }, { label: "Sources", href: "/newsroom/sources", icon: "source", roles: researchRoles }, { label: "Entities", href: "/newsroom/entities", icon: "entity", roles: researchRoles }, { label: "Opportunities", href: "/newsroom/opportunities", icon: "spark", roles: researchRoles }, { label: "Submissions", href: "/newsroom/submissions", icon: "mail", roles: researchRoles }] },
-  { label: "Operations", items: [{ label: "Collector health", href: "/newsroom/collector", icon: "pulse", roles: researchRoles }] },
+  { label: "Stories", items: [{ label: "Drafts", href: "/newsroom?view=drafts", icon: "document" }, { label: "In review", href: "/newsroom?view=review", icon: "check" }, { label: "Scheduled", href: "/newsroom?view=scheduled", icon: "pulse" }, { label: "Published", href: "/newsroom?view=published", icon: "book" }] },
+  { label: "Sources & leads", items: [{ label: "Sources", href: "/newsroom/sources", icon: "source", roles: researchRoles }, { label: "Incoming", href: "/newsroom/incoming", icon: "inbox", roles: researchRoles }] },
+];
+const secondaryItems: Item[] = [
+  { label: "Clusters", href: "/newsroom/clusters", icon: "cluster", roles: researchRoles },
+  { label: "Entities", href: "/newsroom/entities", icon: "entity", roles: researchRoles },
+  { label: "Opportunities", href: "/newsroom/opportunities", icon: "spark", roles: researchRoles },
+  { label: "Submissions", href: "/newsroom/submissions", icon: "mail", roles: researchRoles },
+  { label: "Collector health", href: "/newsroom/collector", icon: "pulse", roles: researchRoles },
 ];
 
 function Icon({ name }: { name: string }) {
@@ -34,5 +40,21 @@ export function AdminShell({ actor, children }: { actor: { name: string; role: S
   const searchParams = useSearchParams();
   const mobileMenu = useRef<HTMLDetailsElement>(null);
   const initials = actor.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("");
-  return <div className="admin-app"><a className="skip-link" href="#admin-content">Skip to newsroom content</a><aside className="admin-sidebar"><div className="admin-brand"><span className="admin-brand-mark" aria-hidden="true">A</span><span><strong>TDAG NEWS</strong><small>EDITORIAL STUDIO</small></span></div><nav className="admin-navigation" aria-label="Newsroom navigation">{groups.map((group) => { const items = group.items.filter((item) => !item.roles || item.roles.includes(actor.role)); return items.length ? <div className="admin-nav-group" key={group.label}><p>{group.label}</p>{items.map((item) => { const active = item.href === "/newsroom" ? pathname === "/newsroom" && !searchParams.get("status") : item.href.startsWith("/newsroom?status=") ? pathname === "/newsroom" && searchParams.get("status") === item.href.split("=")[1] : pathname === item.href || pathname.startsWith(`${item.href}/`); return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}><Icon name={item.icon} /><span>{item.label}</span></Link>; })}</div> : null; })}</nav><div className="admin-sidebar-footer"><span className="admin-status-dot"/> Private workspace</div></aside><div className="admin-workspace"><header className="admin-bar"><details ref={mobileMenu} className="admin-mobile-menu"><summary aria-label="Open newsroom navigation">Menu</summary><nav aria-label="Mobile newsroom navigation">{groups.flatMap((group) => group.items).filter((item) => !item.roles || item.roles.includes(actor.role)).map((item) => <Link key={item.href} href={item.href} onClick={() => { if (mobileMenu.current) mobileMenu.current.open = false; }}>{item.label}</Link>)}</nav></details><div className="admin-bar-title"><span className="admin-bar-eyebrow">TDAG NEWS / NEWSROOM</span><strong>Editorial workspace</strong></div><div className="admin-bar-actions"><Link href="/" target="_blank" rel="noopener noreferrer">View site ↗</Link><span className="admin-account"><span className="admin-avatar" aria-hidden="true">{initials}</span><span><strong>{actor.name}</strong><small>{actor.role.replaceAll("_", " ")}</small></span></span><NewsroomSignOut /></div></header><div id="admin-content" className="admin-content">{children}</div></div></div>;
+  const allowed = (item: Item) => !item.roles || item.roles.includes(actor.role);
+  const active = (item: Item) => item.href === "/newsroom"
+    ? pathname === "/newsroom" && !searchParams.get("view") && !searchParams.get("status")
+    : item.href.startsWith("/newsroom?view=")
+      ? pathname === "/newsroom" && searchParams.get("view") === item.href.split("=")[1]
+      : pathname === item.href || pathname.startsWith(`${item.href}/`);
+  const pageTitle = pathname === "/newsroom" ? ({ drafts: "Drafts", review: "In review", scheduled: "Scheduled", published: "Published" } as Record<string, string>)[searchParams.get("view") ?? ""] ?? "Overview"
+    : pathname.startsWith("/newsroom/story/") ? "Story editor"
+      : pathname.startsWith("/newsroom/incoming") ? "Incoming leads"
+        : [...primaryGroups.flatMap((group) => group.items), ...secondaryItems].find((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))?.label ?? "Newsroom";
+  const moreItems = secondaryItems.filter(allowed);
+  const secondaryActive = moreItems.some(active);
+  const navLink = (item: Item) => <Link key={item.href} href={item.href} aria-current={active(item) ? "page" : undefined}><Icon name={item.icon} /><span>{item.label}</span></Link>;
+  return <div className="admin-app"><a className="skip-link" href="#admin-content">Skip to newsroom content</a>
+    <aside className="admin-sidebar"><Link href="/newsroom" className="admin-brand"><span className="admin-brand-mark" aria-hidden="true">A</span><span><strong>TDAG NEWS</strong><small>EDITORIAL STUDIO</small></span></Link><nav className="admin-navigation" aria-label="Newsroom navigation">{primaryGroups.map((group) => { const items = group.items.filter(allowed); return items.length ? <div className="admin-nav-group" key={group.label}><p>{group.label}</p>{items.map(navLink)}</div> : null; })}{moreItems.length > 0 && <details className="admin-nav-more" key={pathname} open={secondaryActive ? true : undefined}><summary>More tools <span aria-hidden="true">⌄</span></summary><div className="admin-nav-group">{moreItems.map(navLink)}</div></details>}</nav><div className="admin-sidebar-footer"><span className="admin-status-dot"/> Staff workspace</div></aside>
+    <div className="admin-workspace"><header className="admin-bar"><details ref={mobileMenu} className="admin-mobile-menu"><summary aria-label="Open newsroom navigation">Menu</summary><nav aria-label="Mobile newsroom navigation">{primaryGroups.map((group) => { const items = group.items.filter(allowed); return items.length ? <div key={group.label}><p>{group.label}</p>{items.map((item) => <Link key={item.href} href={item.href} aria-current={active(item) ? "page" : undefined} onClick={() => { if (mobileMenu.current) mobileMenu.current.open = false; }}>{item.label}</Link>)}</div> : null; })}{moreItems.length > 0 && <div><p>More tools</p>{moreItems.map((item) => <Link key={item.href} href={item.href} aria-current={active(item) ? "page" : undefined} onClick={() => { if (mobileMenu.current) mobileMenu.current.open = false; }}>{item.label}</Link>)}</div>}</nav></details><div className="admin-bar-title"><span className="admin-bar-eyebrow">TDAG NEWS / NEWSROOM</span><strong>{pageTitle}</strong></div><div className="admin-bar-actions"><Link href="/" target="_blank" rel="noopener noreferrer">View site ↗</Link><span className="admin-account"><span className="admin-avatar" aria-hidden="true">{initials}</span><span><strong>{actor.name}</strong><small>{actor.role.replaceAll("_", " ")}</small></span></span><NewsroomSignOut /></div></header><div id="admin-content" className="admin-content">{children}</div></div>
+  </div>;
 }
